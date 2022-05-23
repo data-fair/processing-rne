@@ -1,6 +1,6 @@
 {
   "name": "@data-fair/processing-rne",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Elected members in France into data-fair datasets",
   "main": "index.js",
   "scripts": {
