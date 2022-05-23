@@ -14,7 +14,7 @@
           "required": ["title"],
           "properties": {
             "id": {"type": "string", "title": "Identifiant du jeu de donnée"},
-            "title": {"type": "string", "title": "Titre du jeu de donnée", "default": "Station service"}
+            "title": {"type": "string", "title": "Titre du jeu de donnée", "default": "Repertoire Elus"}
           }
         }
       }
