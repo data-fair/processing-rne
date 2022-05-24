@@ -23,7 +23,7 @@ module.exports = async (dir = 'data', axios, log) => {
   console.log(ressources)
   await log.step('Téléchargement des fichiers')
   for (const file of ressources) {
-    await log.info(`Téléchargement de ${file}`)
+    await log.info(`Téléchargement de ${file.title}`)
     const url = new URL(file.url)
     const fileName = path.parse(url.pathname).base
     const filePath = `${dir}/${fileName}`
