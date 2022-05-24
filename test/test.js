@@ -41,7 +41,9 @@ describe('rne processing', () => {
       dataset: {
         title: 'rne',
         id: 'process-rne'
-      }
+      },      
+      tmpDir: 'data/tmp',
+      workDir: 'data/work'
     }
 
     const log = {
@@ -62,7 +64,7 @@ describe('rne processing', () => {
     await fs.ensureDir('data/')
     // process.chdir('data/')
     console.log(process.cwd())
-    await processing.run({pluginConfig, processingConfig, tmpDir: path.resolve('./data'), axios: axiosInstance, log, patchConfig})
+    await processing.run({pluginConfig, processingConfig, tmpDir, axios: axiosInstance, log, patchConfig})
     // process.chdir(cwd)
   })
 })
