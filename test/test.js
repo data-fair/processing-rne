@@ -41,7 +41,7 @@ describe('rne processing', () => {
       dataset: {
         title: 'rne',
         id: 'process-rne'
-      },      
+      },
       tmpDir: 'data/tmp',
       workDir: 'data/work'
     }
@@ -60,11 +60,12 @@ describe('rne processing', () => {
       Object.assign(processingConfig, patch)
     }
 
-    const cwd = process.cwd()
-    await fs.ensureDir('data/')
-    // process.chdir('data/')
-    console.log(process.cwd())
-    await processing.run({pluginConfig, processingConfig, tmpDir, axios: axiosInstance, log, patchConfig})
+    // const cwd = process.cwd()
+    await fs.ensureDir(processingConfig.tmpDir)
+    await fs.ensureDir(processingConfig.workDir)
+    const tmpDir = path.resolve(processingConfig.tmpDir)
+    process.chdir(processingConfig.workDir)
+    await processing.run({ pluginConfig, processingConfig, tmpDir, axios: axiosInstance, log, patchConfig })
     // process.chdir(cwd)
   })
 })
