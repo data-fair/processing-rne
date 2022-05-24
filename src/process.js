@@ -36,7 +36,6 @@ module.exports = async (tmpDir,log) => {
     dir = dir.filter(file => file.startsWith('rne'))
     const elus = {}
     for (const file of dir) {
-        await log.step(`Traitement de ${file}`)
         const data = iconv.decode(fs.readFileSync(path.join(tmpDir, file)), 'UTF-8')
         const lines = data.split(/\r\n|\r|\n/g)
         const header = lines.shift().split('\t')
