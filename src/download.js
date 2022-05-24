@@ -17,7 +17,7 @@ const withStreamableFile = async (filePath, fn) => {
 
 module.exports = async (pluginConfig, dir = 'data', axios, log) => {
   const datasetId = '5c34c4d1634f4173183a64f1'
-  const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + datasetId)
+  const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + datasetId + '/')
 
   const ressources = res.data.resources
   for (const file of ressources) {
