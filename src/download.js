@@ -20,12 +20,12 @@ module.exports = async (pluginConfig, dir = 'data', axios, log) => {
   const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + datasetId + '/')
 
   const ressources = res.data.resources
+  await log.step('Téléchargement des fichiers')
   for (const file of ressources) {
-    
-      await log.step(`téléchargement du fichier ${file.title}`)
       const url = new URL(file.url)
       const fileName = path.parse(url.pathname).base
-      await withStreamableFile(fileName, async (writeStream) => {
+      const filePath = `${dir}/${fileName}`
+      await withStreamableFile(filePath, async (writeStream) => {
         const res = await axios({ url: url.href, method: 'GET', responseType: 'stream' })
         await pump(res.data, writeStream)
       })
