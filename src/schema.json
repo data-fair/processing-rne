@@ -1,37 +1,37 @@
 [
     {
-        "key": "Nom de l'élu ",
+        "key": "Nom_de_l'élu",
         "title": "Nom de l'élu",
         "description": "Nom de l'élu",
         "type": "string"
     },
     {
-        "key": "Prénom de l'élu",
+        "key": "Prénom_de_l'élu",
         "title": "Prénom de l'élu",
         "description": "Prénom de l'élu",
         "type": "string"
     },
     {
-        "key": "Code sexe",
+        "key": "Code_sexe",
         "title": "Code sexe",
         "description": "Sexe de l'élu",
         "type": "string"
     },
     {
-        "key": "Date de naissance",
+        "key": "Date_de_naissance",
         "title": "Date de naissance",
         "description": "Date de naissance de l'élu",
         "type": "date",
-        "x-refersTo": "https://schema.org/dateCreated"
+        "x-refersTo": "http://schema.org/Date"
     },
     {
-        "key": "Code de la catégorie socio-professionnelle",
+        "key": "Code_de_la_catégorie_socio-professionnelle",
         "title": "Code de la catégorie socio-professionnelle",
         "description": "Code de la profession de l'élu",
         "type": "integer"
     },
     {
-        "key": "Libellé de la catégorie socio-professionnelle ",
+        "key": "Libellé_de_la_catégorie_socio-professionnelle",
         "title": "Libellé de la catégorie socio-professionnelle",
         "description": "Profession de l'élu",
         "type": "string"
@@ -43,61 +43,61 @@
         "type": "integer"
     },
     {
-        "key": "Conseiller Municipal",
+        "key": "Conseiller_Municipal",
         "title": "Conseiller Municipal",
-        "description": "",
+        "description": "Conseiller Municipal",
         "type": "boolean"
     },
     {
-        "key": "Conseiller communautaire",
-        "title": "Conseiller communautaire",
-        "description": "",
+        "key": "Conseiller_communautaire",
+        "title": "Conseiller_communautaire",
+        "description": "Conseiller communautaire",
         "type": "boolean"
     },
     {
-        "key": "Conseiller départemental",
+        "key": "Conseiller_départemental",
         "title": "Conseiller départemental",
-        "description": "",
+        "description": "Conseiller départemental",
         "type": "boolean"
     },
     {
-        "key": "Conseiller régional",
+        "key": "Conseiller_régional",
         "title": "Conseiller régional",
-        "description": "",
+        "description": "Conseiller departemental",
         "type": "boolean"
     },
     {
-        "key": "Conseiller de l’Assemblée de Corse",
+        "key": "Conseiller_de_l’Assemblée_de_Corse",
         "title": "Conseiller de l’Assemblée de Corse",
         "description": "",
         "type": "boolean"
     },
     {
-        "key": "Représentant au Parlement européen",
+        "key": "Représentant_au_Parlement_européen",
         "title": "Représentant au Parlement européen",
-        "description": "",
+        "description": "Representant parlement",
         "type": "boolean"
     },
     {
         "key": "Sénateur",
         "title": "Sénateur",
-        "description": "",
+        "description": "Senateur",
         "type": "boolean"
     },
     {
         "key": "Député",
         "title": "Député",
-        "description": "",
+        "description": "Depute",
         "type": "boolean"
     },
     {
         "key": "Maire",
         "title": "Maire",
-        "description": "",
+        "description": "Maire",
         "type": "boolean"
     },
     {
-        "key": "Nombre de mandats",
+        "key": "Nombre_de_mandats",
         "title": "Nombre de mandats",
         "description": "Nombre de mandats de l'élu",
         "type": "integer"
@@ -106,10 +106,11 @@
         "key": "Fonctions",
         "title": "Fonctions",
         "description": "Différentes fonctions de l'élu",
-        "type": "string"
+        "type": "string",
+        "separator" : "; "
     },
     {
-        "key": "Nombre de fonctions",
+        "key": "Nombre_de_fonctions",
         "title": "Nombre de fonctions",
         "description": "Nombres de fonctions qu'occupe l'élu",
         "type": "integer"
@@ -117,7 +118,7 @@
     {
         "key": "Identifiant",
         "title": "Identifiant",
-        "description": "",
+        "description": "Identifiant de la personne",
         "type": "string"
     }
 ]
