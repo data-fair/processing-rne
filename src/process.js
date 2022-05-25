@@ -34,7 +34,7 @@ module.exports = async (tmpDir, log) => {
 
   await log.step('Traitement des fichiers')
   let dir = await fs.readdir(tmpDir)
-  dir = dir.filter(file => file.startsWith('rne-maires'))
+  dir = dir.filter(file => file.startsWith('rne'))
   const elus = {}
   for (const file of dir) {
     await log.step(`Traitement de ${file}`)
