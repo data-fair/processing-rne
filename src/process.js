@@ -5,6 +5,7 @@ const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 require('dayjs/locale/fr')
 const iconv = require('iconv-lite')
+const upload = require('./upload')
 
 const mandats = {
   '1': 'Conseiller Municipal',
@@ -29,14 +30,14 @@ module.exports = async (tmpDir, log) => {
   const writeStream = fs.createWriteStream(path.join(tmpDir, 'Repertoire-national-des-elus.csv'))
   const fields = [`Nom de l'élu`, `Prénom de l'élu`, `Code sexe`, `Date de naissance`, `Code de la catégorie socio-professionnelle`, `Libellé de la catégorie socio-professionnelle`]
   const commonFields = [].concat(fields, 'Age', Object.values(mandats), ['Nombre de mandats', 'Fonctions', 'Nombre de fonctions', 'Identifiant'])
-  writeStream.write(commonFields.map(elemHeader => `"${elemHeader}"`).join(',') + '\n')
+  writeStream.write(commonFields.map(elemHeader => `"${elemHeader.replace(/ /g,'_')}"`).join(',') + '\n')
 
   await log.step('Traitement des fichiers')
   let dir = await fs.readdir(tmpDir)
-  dir = dir.filter(file => file.startsWith('rne'))
+  dir = dir.filter(file => file.startsWith('rne-maires'))
   const elus = {}
   for (const file of dir) {
-    await log.info(`Traitement de ${file}`)
+    await log.step(`Traitement de ${file}`)
     const data = iconv.decode(fs.readFileSync(path.join(tmpDir, file)), 'UTF-8')
     const lines = data.split(/\r\n|\r|\n/g)
     const header = lines.shift().split('\t')
@@ -69,6 +70,7 @@ module.exports = async (tmpDir, log) => {
       }
     })
   }
+  await log.info("Ecriture du fichier")
   Object.values(elus).forEach(elu => {
     if (elu.Mandats.Maire) {
       delete elu.Mandats['Conseiller Municipal']
@@ -80,8 +82,15 @@ module.exports = async (tmpDir, log) => {
     writeStream.write(`,"${elu.Fonctions.join(';')}"`)
     writeStream.write(`,"${elu.Fonctions.length}"`)
     writeStream.write(`,"${elu.Identifiant}"\n`)
+
   })
-
-  writeStream.end()
-
+    async function waitForStreamClose(stream) {
+    stream.close()
+    return new Promise((resolve, reject) => {
+      stream.once('close', () => {
+        resolve()
+      })
+    })
+  }
+  await waitForStreamClose(writeStream)
 }
