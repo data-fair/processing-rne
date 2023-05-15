@@ -15,12 +15,10 @@ const withStreamableFile = async (filePath, fn) => {
   await fs.move(filePath + '.tmp', filePath, { overwrite: true })
 }
 // processingConfig
-module.exports = async (dir = 'data', axios, log) => {
-  const datasetId = '5c34c4d1634f4173183a64f1'
-  const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + datasetId + '/')
+module.exports = async (processingConfig, dir = 'data', axios, log) => {
+  const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + processingConfig.datasetID + '/')
 
   const ressources = res.data.resources
-  console.log(ressources)
   await log.step('Téléchargement des fichiers')
   for (const file of ressources) {
     await log.info(`Téléchargement de ${file.title}`)

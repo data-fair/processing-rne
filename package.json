@@ -11,25 +11,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WiPhil/processing-rne.git"
+    "url": "git+https://github.com/data-fair/processing-rne.git"
   },
   "keywords": [
     "data-fair-processings-plugin"
   ],
-  "author": "Philippe Laidin",
+  "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WiPhil/processing-rne/issues"
+    "url": "https://github.com/data-fair/processing-rne/issues"
   },
-  "homepage": "https://github.com/WiPhil/processing-rne#readme",
+  "homepage": "https://github.com/data-fair/processing-rne#readme",
   "devDependencies": {
+    "@data-fair/processings-test-utils": "^0.5.2",
     "axios": "^0.21.4",
     "config": "^3.3.6",
-    "mocha": "^8.2.1",
-    "moment": "^2.29.2",
+    "eslint": "^7.13.0",
+    "mocha": "^10.2.0",
     "standard": "^16.0.3"
   },
   "dependencies": {
+    "csv-parse": "^5.3.10",
+    "csv-stringify": "^6.4.0",
     "dayjs": "^1.11.2",
     "form-data": "^4.0.0",
     "fs-extra": "^10.0.1",

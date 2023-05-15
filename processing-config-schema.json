@@ -13,7 +13,7 @@
           "type": "object",
           "required": ["title"],
           "properties": {
-            "title": {"type": "string", "title": "Titre du jeu de donnée", "default": "Repertoire Elus"}
+            "title": {"type": "string", "title": "Titre du jeu de donnée", "default": "Repertoire National des Elus"}
           }
         }
       }
@@ -39,6 +39,21 @@
   }, {
     "title": "Paramètres",
     "properties": {
+      "datasetID":{
+        "type": "string",
+        "title": "ID dataset data.gouv.fr",
+        "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: repertoire-national-des-associations)"
+      },
+      "fileMerge": {
+        "title": "fusionner les fichiers téléchargés",
+        "type": "boolean",
+        "default": false
+      },
+      "separator":{
+        "type": "string",
+        "title": "Séparateur de colonnes",
+        "description": "Le séparateur de colonnes utilisé dans le fichier CSV pour les champs multivalués (ex: , ou ;)"
+      },
       "clearFiles": {
         "title": "supprimer les fichiers téléchargés",
         "type": "boolean",

@@ -5,92 +5,88 @@ const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 require('dayjs/locale/fr')
 const iconv = require('iconv-lite')
-const upload = require('./upload')
+const { parse } = require('csv-parse/sync')
+const csvStringify = require('csv-stringify/sync').stringify
+const { mandat, schemas, schemasRaw } = require('./data.js')
+const upload = require('./upload.js')
 
-const mandats = {
-  '1': 'Conseiller Municipal',
-  '2': 'Conseiller communautaire',
-  '3': 'Conseiller départemental',
-  '4': 'Conseiller régional',
-  '5': 'Conseiller de l’Assemblée de Corse',
-  '6': 'Représentant au Parlement européen',
-  '7': 'Sénateur',
-  '8': 'Député',
-  '9': 'Maire'
-}
+const items = []
+const parserOpts = { delimiter: '\t' }
 
-function formatedValue(value) {
+function formatedValue (value) {
   if (value && value.indexOf('/') > 0) {
     const toks = value.split('/')
     return toks[2] + '-' + toks[1].padStart(2, '0') + '-' + toks[0].padStart(2, '0')
   } else return value && value.replace(/"/g, '""')
 }
 
-module.exports = async (tmpDir, log) => {
-  const writeStream = fs.createWriteStream(path.join(tmpDir, 'Repertoire-national-des-elus.csv'))
-  const fields = [`Nom de l'élu`, `Prénom de l'élu`, `Code sexe`, `Date de naissance`, `Code de la catégorie socio-professionnelle`, `Libellé de la catégorie socio-professionnelle`]
-  const commonFields = [].concat(fields, 'Age', Object.values(mandats), ['Nombre de mandats', 'Fonctions', 'Nombre de fonctions', 'Identifiant'])
-  writeStream.write(commonFields.map(elemHeader => `"${elemHeader.replace(/ /g,'_')}"`).join(',') + '\n')
-
+module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
+  const commonFields = ['Nom de l\'élu', 'Prénom de l\'élu', 'Code sexe', 'Date de naissance', 'Code de la catégorie socio-professionnelle', 'Libellé de la catégorie socio-professionnelle', 'Date de début du mandat']
+  let delimiter = ';'
+  if (processingConfig.separator === ';') delimiter = ','
   await log.step('Traitement des fichiers')
   let dir = await fs.readdir(tmpDir)
   dir = dir.filter(file => file.startsWith('rne'))
   const elus = {}
   for (const file of dir) {
-    await log.step(`Traitement de ${file}`)
+    await log.info(`Traitement de ${file}`)
     const data = iconv.decode(fs.readFileSync(path.join(tmpDir, file)), 'UTF-8')
-    const lines = data.split(/\r\n|\r|\n/g)
-    const header = lines.shift().split('\t')
-    const indices = fields.map(f => header.indexOf(f))
+    const lines = parse(data, parserOpts)
+    const header = lines.shift()
+    const indices = commonFields.map(f => header.indexOf(f))
+    const mandatId = file.split('-')[1].split('.')[0]
+    const mandatName = mandat[mandatId]
+    const schemaRaw = schemasRaw[mandatId]
+    const schema = schemas[mandatId]
+    const filesItems = []
 
-    const mandatIndice = header.indexOf('Date de début du mandat')
-    const fonctionIndice = header.indexOf('Libellé de fonction')
-    const indexName1 = file.split('-').findIndex(element => { if (element.includes(file.match('cm'))) { return true; } }); if (indexName1 !== -1) { indiceMandat = 1 }
-    const indexName2 = file.split('-').findIndex(element => { if (element.includes(file.match('epci'))) { return true; } }); if (indexName2 !== -1) { indiceMandat = 2 }
-    const indexName3 = file.split('-').findIndex(element => { if (element.includes(file.match('cd'))) { return true; } }); if (indexName3 !== -1) { indiceMandat = 3 }
-    const indexName4 = file.split('-').findIndex(element => { if (element.includes(file.match('cr'))) { return true; } }); if (indexName4 !== -1) { indiceMandat = 4 }
-    const indexName5 = file.split('-').findIndex(element => { if (element.includes(file.match('ma'))) { return true; } }); if (indexName5 !== -1) { indiceMandat = 5 }
-    const indexName6 = file.split('-').findIndex(element => { if (element.includes(file.match('rpe'))) { return true; } }); if (indexName6 !== -1) { indiceMandat = 6 }
-    const indexName7 = file.split('-').findIndex(element => { if (element.includes(file.match('sen'))) { return true; } }); if (indexName7 !== -1) { indiceMandat = 7 }
-    const indexName8 = file.split('-').findIndex(element => { if (element.includes(file.match('dep'))) { return true; } }); if (indexName8 !== -1) { indiceMandat = 8 }
-    const indexName9 = file.split('-').findIndex(element => { if (element.includes(file.match('maires'))) { return true; } }); if (indexName9 !== -1) { indiceMandat = 9 }
-    const mandat = mandats[indiceMandat]
     lines.forEach(line => {
-      const values = line.split('\t')
-      if (values.length === header.length && values[mandatIndice]) {
-        const id = `${values[indices[1]]} ${values[indices[0]]} ${values[indices[3]]}`
+      if (line.length === header.length) {
+        const id = `${line[indices[1]]} ${line[indices[0]]} ${line[indices[3]]}`
         elus[id] = elus[id] || Object.assign({
-          'Mandats': {},
-          'Fonctions': [],
-          'Identifiant': id
-        }, ...fields.map((f, i) => ({ [f]: formatedValue(values[indices[i]]) })))
-        elus[id].Mandats[mandat] = true
-        const fonction = (fonctionIndice >= 0 && values[fonctionIndice]) ? values[fonctionIndice] : mandat
-        if (elus[id].Fonctions.indexOf(fonction) < 0) elus[id].Fonctions.push(fonction)
+          Mandats: [],
+          DatesMandats: [],
+          Identifiant: id
+        }, ...commonFields.map((f, i) => ({ [f]: formatedValue(line[indices[i]]) })))
+        if (elus[id].Mandats.indexOf(mandatName) < 0) {
+          elus[id].Mandats.push(mandatName)
+          elus[id].DatesMandats.push(line[indices[6]])
+        }
+        if (!processingConfig.fileMerge) {
+          const item = Object.assign({}, ...schemaRaw.map((field, i) => ({ [field.key]: formatedValue(line[i]) })))
+          const dateDebutMandat = item.date_de_debut_mandat
+          delete item.date_de_debut_mandat
+          item.age = dayjs().diff(item.date_de_naissance, 'years')
+          item.mandat = mandatName
+          item.date_de_debut_mandat = dateDebutMandat
+          item.identifiant = id
+          filesItems.push(item)
+        }
       }
     })
-  }
-  await log.info("Ecriture du fichier")
-  Object.values(elus).forEach(elu => {
-    if (elu.Mandats.Maire) {
-      delete elu.Mandats['Conseiller Municipal']
+    if (!processingConfig.fileMerge) {
+      const tmpWriteStream = await fs.openSync(path.join(tmpDir, 'Repertoire-national-des-elus.csv'), 'w')
+      await fs.writeSync(tmpWriteStream, csvStringify(filesItems, { header: true, delimiter: delimiter, columns: schema.map(field => field.key) }))
+      await upload(processingConfig, tmpDir, axios, log, patchConfig, mandatId)
     }
-    writeStream.write(fields.map(f => `"${elu[f]}"`).join(','))
-    writeStream.write(`,"${elu['Date de naissance'] ? dayjs().diff(elu['Date de naissance'], 'years') : ''}"`)
-    writeStream.write(',' + Object.values(mandats).map(m => `${elu.Mandats[m] || false}`).join(','))
-    writeStream.write(`,"${Object.keys(elu.Mandats).length}"`)
-    writeStream.write(`,"${elu.Fonctions.join(';')}"`)
-    writeStream.write(`,"${elu.Fonctions.length}"`)
-    writeStream.write(`,"${elu.Identifiant}"\n`)
-
-  })
-    async function waitForStreamClose(stream) {
-    stream.close()
-    return new Promise((resolve, reject) => {
-      stream.once('close', () => {
-        resolve()
-      })
-    })
   }
-  await waitForStreamClose(writeStream)
+  await log.info('Ecriture du fichier csv final')
+  const writeStream = await fs.openSync(path.join(tmpDir, 'Repertoire-national-des-elus.csv'), 'w')
+  Object.values(elus).forEach(elu => {
+    const item = [
+      elu[commonFields[0]],
+      elu[commonFields[1]],
+      elu[commonFields[2]],
+      elu[commonFields[3]],
+      elu[commonFields[3]] ? dayjs().diff(elu[commonFields[3]], 'years') : '',
+      elu[commonFields[4]],
+      elu[commonFields[5]],
+      elu.Mandats.join(';'),
+      elu.DatesMandats.join(';'),
+      elu.Identifiant
+    ]
+    items.push(item)
+  })
+  const fields = schemas.elu.map((field) => field.key)
+  await fs.writeSync(writeStream, csvStringify(items, { header: true, delimiter: delimiter, columns: fields }))
 }
