@@ -46,22 +46,24 @@
       },
       "fileMerge": {
         "title": "Sélection des jeux de données",
-        "oneOf": [{
-          "title": "Fusionner les fichiers dans un seul jeu de données",
-          "properties": {
-            "fileMerge": { "type": "string", "const": "merge" }
-          }
-        }, {
-          "title": "Un jeu de données par fichier",
-          "properties": {
-            "fileMerge": { "type": "string", "const": "split" }
-          }
-        }, {
-          "title": "Un jeu de données par fichier + fusion",
-          "properties": {
-            "fileMerge": { "type": "string", "const": "all" }
-          }
-        }]
+        "required": ["name"],
+        "name" : {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "merge",
+              "title": "Fusionner les fichiers"
+            },
+            {
+              "const": "split",
+              "title": "Séparer les fichiers"
+            },
+            {
+              "const": "all",
+              "title": "Tous les fichiers"
+            }
+          ]
+        }
       },
       "separator":{
         "type": "string",
