@@ -68,6 +68,13 @@ const mandats = {
   separator: ';'
 }
 
+const nbMandats = {
+  key: 'nombre_de_mandats',
+  title: 'Nombre de mandats',
+  description: "Nombre de mandats de l'élu",
+  type: 'integer'
+}
+
 const datesMandats = {
   key: 'dates_de_debut_mandat',
   title: 'Dates de début de mandat',
@@ -248,7 +255,7 @@ const libelleCirconscriptionMetropolitaine = {
 }
 
 exports.schemas = {
-  elu: [nom, prenom, sexe, dateNaissance, age, categorieSocioProfessionnelle, libelleCategorieSocioProfessionnelle, mandats, datesMandats, identifiant],
+  elu: [nom, prenom, sexe, dateNaissance, age, categorieSocioProfessionnelle, libelleCategorieSocioProfessionnelle, mandats, nbMandats, datesMandats, identifiant],
   cd: [codeDepartement, libelleDepartement, codeCanton, libelleCanton, nom, prenom, sexe, dateNaissance, age, categorieSocioProfessionnelle, libelleCategorieSocioProfessionnelle, mandat, dateMandat, fonction, dateFonction, identifiant],
   cm: [codeDepartement, libelleDepartement, codeCollectiviteAStatutParticulier, libelleCollectiviteAStatutParticulier, codeCommune, libelleCommune, nom, prenom, sexe, dateNaissance, age, categorieSocioProfessionnelle, libelleCategorieSocioProfessionnelle, mandat, dateMandat, fonction, dateFonction, codeNationalite, identifiant],
   cr: [codeRegion, libelleRegion, codeDepartement, libelleDepartement, nom, prenom, sexe, dateNaissance, age, categorieSocioProfessionnelle, libelleCategorieSocioProfessionnelle, mandat, dateMandat, fonction, dateFonction, identifiant],

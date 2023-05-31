@@ -12,10 +12,10 @@ describe('RNE', function () {
       processingConfig: {
         clearFiles: false,
         datasetMode: 'update',
-        dataset: { title: 'Répertoire National des Elus', id: 'repertoire-national-des-elus-1' },
+        dataset: { title: 'Répertoire National des Elus', id: 'repertoire-national-des-elus-fusion' },
         datasetID: 'repertoire-national-des-elus-1',
         separator: ';',
-        fileMerge: false
+        fileMerge: 'all'
       },
       tmpDir: 'data/'
     }, config, false)
