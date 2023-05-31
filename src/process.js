@@ -73,7 +73,7 @@ module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
     const writeStream = await fs.openSync(path.join(tmpDir, 'Repertoire-national-des-elus.csv'), 'w')
     Object.values(elus).forEach(elu => {
       if (elu.Mandats.includes('Maire')) {
-        const index = elu.Mandats.indexOf('Conseiller municipal')
+        const index = elu.Mandats.indexOf('Conseiller Municipal')
         elu.Mandats.splice(index, 1)
       }
       const item = [
