@@ -46,24 +46,21 @@
       },
       "fileMerge": {
         "title": "Sélection des jeux de données",
-        "required": ["name"],
-        "name" : {
-          "type": "string",
-          "oneOf": [
-            {
-              "const": "merge",
-              "title": "Fusionner les fichiers"
-            },
-            {
-              "const": "split",
-              "title": "Séparer les fichiers"
-            },
-            {
-              "const": "all",
-              "title": "Tous les fichiers"
-            }
-          ]
-        }
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "merge",
+            "title": "Fusionner les fichiers"
+          },
+          {
+            "const": "split",
+            "title": "Séparer les fichiers"
+          },
+          {
+            "const": "all",
+            "title": "Tous les fichiers"
+          }
+        ]
       },
       "separator":{
         "type": "string",
