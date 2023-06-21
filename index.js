@@ -1,6 +1,6 @@
-const download = require('./src/download')
-const process = require('./src/process')
-const upload = require('./src/upload')
+const download = require('./lib/download')
+const process = require('./lib/process')
+const upload = require('./lib/upload')
 
 exports.run = async ({ processingConfig, tmpDir, axios, log, patchConfig }) => {
   await log.step('Configuration')
