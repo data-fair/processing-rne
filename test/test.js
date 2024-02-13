@@ -1,12 +1,13 @@
 process.env.NODE_ENV = 'test'
 const config = require('config')
-const testUtils = require('@data-fair/processings-test-utils')
 const rneProcessing = require('../')
 
 describe('RNE', function () {
   it('should download, process files and upload a csv on the staging', async function () {
     this.timeout(1000000)
-    const context = testUtils.context({
+
+    const testsUtils = await import('@data-fair/lib/processings/tests-utils.js')
+    const context = testsUtils.context({
       pluginConfig: {
       },
       processingConfig: {
